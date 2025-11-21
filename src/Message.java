@@ -36,7 +36,7 @@ public abstract class Message {
         }
     }
 
-    // --- Constructor: Full Initialization ---
+    // Constructor: Full Initialization
 
     /**
      * Initializes all core message fields after performing validation.
@@ -64,7 +64,7 @@ public abstract class Message {
         this.messageId = nextId++;
     }
 
-    // --- Constructor: Auto-Generated Send Date ---
+    // Constructor: Auto-Generated Send Date
 
     /**
      * Initializes a new message, setting the send date to the current system time.
@@ -77,7 +77,7 @@ public abstract class Message {
         this(sender, content, new Date(), isHighImportance);
     }
 
-            // --- Getters ---
+    // Getters
 
     public int getMessageId() {
         return messageId;
@@ -91,7 +91,6 @@ public abstract class Message {
         return content;
     }
 
-    // --- Override: toString() ---
 
     /**
      * Provides a readable String representation of the message object's state.
@@ -107,7 +106,7 @@ public abstract class Message {
                 '}';
     }
 
-    // --- Method: find(ArrayList<String> words) ---
+    // Method: find word
 
     /**
      * Checks if the message content contains any of the provided search words (case-insensitive).
@@ -115,25 +114,24 @@ public abstract class Message {
      * @return true if a match is found, otherwise false.
      */
     public boolean find(ArrayList<String> words) {
+        // when there are no words return False
         if (words == null || words.isEmpty()) {
             return false;
         }
 
-        // Convert content to lowercase once to improve loop efficiency.
-        final String lowerContent = this.content.toLowerCase();
-
-        // Iterate through the search words.
+        // Loop through each word and look for a match
         for (String word : words) {
-            // Check if content contains the current word (converted to lowercase for comparison).
-            if (lowerContent.contains(word.toLowerCase())) {
+            // Check if the original content contains the word. if yes the return True
+            if (this.content.contains(word)) {
                 return true;
             }
         }
+
+        // If no match was found after checking all words return False
         return false;
     }
 
-    // --- Abstract Method: generatePreview() ---
-
+    // Abstract Method
     /**
      * Forces subclasses to implement a method that generates a short, message-type-specific preview.
      */
