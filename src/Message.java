@@ -9,11 +9,10 @@ import java.util.ArrayList;
  */
 public abstract class Message {
 
-    // --- Static Fields ---
     // Counter used to assign a unique ID to each new message.
     private static int nextId = 1;
 
-    // --- Protected Instance Fields ---
+    // Protected Fields
     protected String sender;
     protected String content;
     protected Date sendDate;
@@ -21,8 +20,7 @@ public abstract class Message {
     protected boolean isHighImportance;
 
 
-    // --- Private Utility Method for Validation ---
-
+    // Private Utility Method for Validation
     /**
      * Checks if a String is null or contains only whitespace.
      * Throws an exception if the value is invalid.
@@ -36,8 +34,7 @@ public abstract class Message {
         }
     }
 
-    // Constructor: Full Initialization
-
+    // Full Initialization
     /**
      * Initializes all core message fields after performing validation.
      * @param sender The sender's name.
@@ -64,7 +61,7 @@ public abstract class Message {
         this.messageId = nextId++;
     }
 
-    // Constructor: Auto-Generated Send Date
+    // Partial Constructor - Auto-Generated Send Date
 
     /**
      * Initializes a new message, setting the send date to the current system time.
