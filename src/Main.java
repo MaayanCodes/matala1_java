@@ -74,6 +74,97 @@ public class Main {
     }
 
     /**
+     * Prompts the user for details, creates a new Message object, and adds it to the repository.
+     */
+    private static void addNewMessage() {
+        System.out.println("\n--- Add New Message ---");
+        System.out.println("Select message type:");
+        System.out.println("  1. Board Message");
+        System.out.println("  2. Email Message");
+        System.out.println("  3. Encrypted Message");
+        System.out.print("Enter type choice: ");
+
+        int typeChoice = -1;
+
+        // Try-Catch for overall message creation logic and exception handling
+        try {
+            // Read type choice
+            typeChoice = scanner.nextInt();
+            scanner.nextLine(); // Clear newline
+
+            System.out.print("Enter Sender Name: ");
+            String sender = scanner.nextLine().trim();
+            System.out.print("Enter Content: ");
+            String content = scanner.nextLine().trim();
+            System.out.print("Is High Importance (true/false)? ");
+            boolean isHighImportance = Boolean.parseBoolean(scanner.nextLine().trim());
+
+            Message newMessage = null;
+
+            // Collect type-specific fields and create the object
+            switch (typeChoice) {
+                case 1:
+                    // BoardMessage requires PriorityType and Department
+                    System.out.print("Enter Department: ");
+                    String department = scanner.nextLine().trim();
+                    System.out.print("Enter Priority (URGENT, REGULAR, NOT_URGENT): ");
+                    // Use valueOf to convert String input to the Enum type, throws IllegalArgumentException if invalid
+                    PriorityType priority = PriorityType.valueOf(scanner.nextLine().toUpperCase().trim());
+
+                    // Use the FULL constructor (new Date() will be generated in the partial constructor call within BoardMessage)
+                    newMessage = new BoardMessage(sender, content, new Date(), isHighImportance, priority, department);
+                    break;
+                case 2:
+                    // EmailMessage requires Subject
+                    System.out.print("Enter Subject: ");
+                    String subject = scanner.nextLine().trim();
+
+                    // Use the PARTIAL constructor (attachments list is initialized empty)
+                    newMessage = new EmailMessage(sender, content, isHighImportance, subject);
+                    break;
+                case 3:
+                    // EncryptedMessage requires Encryption Key and Algorithm (optional default)
+                    System.out.print("Enter Encryption Key: ");
+                    String key = scanner.nextLine().trim();
+                    System.out.print("Enter Algorithm (e.g., AES-256) or leave blank for default: ");
+                    String algorithm = scanner.nextLine().trim();
+
+                    // Choose constructor based on whether the algorithm was provided
+                    if (algorithm.isEmpty()) {
+                        // PARTIAL constructor (default algorithm)
+                        newMessage = new EncryptedMessage(sender, content, isHighImportance, key);
+                    } else {
+                        // FULL constructor
+                        newMessage = new EncryptedMessage(sender, content, new Date(), isHighImportance, key, algorithm);
+                    }
+                    break;
+                default:
+                    System.out.println("Invalid message type choice. Aborting.");
+                    return;
+            }
+
+            // Final Add to Repository
+            if (newMessage != null) {
+                messageRepository.add(newMessage);
+                System.out.println("Message added successfully! ID: " + newMessage.getMessageId());
+            }
+
+            // Catch validation errors (like null/empty strings or invalid Enum values)
+        } catch (IllegalArgumentException e) {
+            System.out.println("\n!!! ERROR: Invalid Data Input. " + e.getMessage() + " !!!");
+            System.out.println("Message creation failed. Please check field requirements.");
+        }
+        // Catch general scanner errors if the user provided non-numeric input for the typeChoice
+        catch (Exception e) {
+            System.out.println("\n!!! CRITICAL ERROR: Input format error occurred. Aborting message creation. !!!");
+            if (scanner.hasNextLine()) {
+                scanner.nextLine();
+            }
+        }
+    }
+
+
+    /**
      * Handles the 'Delete Message' menu option by attempting to read a message ID,
      * searching the repository, and removing the matching message.
      */
@@ -173,7 +264,6 @@ public class Main {
     }
 
 
-
     // ^^^ Main Method ^^^
 
     public static void main(String[] args) {
@@ -195,7 +285,7 @@ public class Main {
                 // Execute the action based on the user's choice.6
                 switch (choice) {
                     case 1:
-                        System.out.println("--- Message addition logic not implemented in this demo ---");
+                        addNewMessage(); // Replaced demo message with full logic
                         break;
                     case 2:
                         deleteMessage();
